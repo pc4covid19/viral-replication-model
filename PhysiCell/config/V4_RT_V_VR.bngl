@@ -1,0 +1,113 @@
+# DRAFT reaction network description of version 4 of the pc4cov model.
+# Includes RT, V, and VR modules. V module is initiated with 1 virion adhered to cell.
+# With the default parameters the viral replication through vRNA replication is linear
+# because half-max for saturation is just 5 vRNA copies. This should be checked against 
+# experimental data.
+# Author: James R. Faeder
+# Date: 08/26/2020
+
+begin model
+begin parameters
+  TIME_CONV     60   # Base units are minutes. Set to 60 for hours, etc.
+  # RT module
+  r_bind       0.01*TIME_CONV # units:1/min
+  r_endo       0.01*TIME_CONV # units:1/min
+  r_release    0.01*TIME_CONV # units:1/min * 1e-3 is probably too small
+  r_recycle    0.01*TIME_CONV # units:1/min 
+  ACE2_0       1e4            # units: #/cell *there will not be any receptor depletion
+                              #                unless large numbers of virus particles enter           
+  # V module 
+  r_uncoat 		0.01*TIME_CONV # units:1/min
+  r_prep 		0.01*TIME_CONV # units:1/min
+  r_synth 		0.01*TIME_CONV # units:1/min
+  r_rep_max     3*TIME_CONV   # Maximum RNA replication rate
+  r_rep_half    200            # Number of viral RNA at which RNA replication rate is half-maximal
+  r_rna_deg     0.010*TIME_CONV # Basal rate of vRNA degradation
+  r_assemble 	0.01*TIME_CONV # units:1/min
+  r_exo 		0.01*TIME_CONV # units:1/min
+  
+  # VR module
+  max_infected_apoptosis_rate      0.002*TIME_CONV # Max infected cell apoptosis rate
+  max_infected_half_max            250
+  apoptosis_hill			       1
+  virus_fraction_released_at_death 0
+end parameters
+
+begin molecule types
+  nV()
+  R_EU() # External ACE2 receptors unbound
+  R_EB() # External ACE2 receptors bound to virus
+  R_IU() # Internal ACE2 receptors unbound
+  R_IB() # Internal ACE2 receptors bound to virus
+  V() # virus released from internalized ACE2 recepotrs in the cell
+  U() # viruses that have been uncoated
+  R() # RNA released from uncoated virus
+  P() # Full sets of viral proteins
+  A() # Assembled virions
+  E() # Exported virions
+  Cell() # Tracks survival propbability of mean infected cell
+end molecule types
+
+begin seed species
+  nV()       10
+  R_EU()     ACE2_0
+  Cell()     1
+  E()        1
+end seed species
+
+begin observables
+  Molecules nV nV()
+  Molecules R_EB R_EB()
+  Molecules V V()
+  Molecules U U()
+  Molecules R R()
+  Molecules P P()
+  Molecules A A()
+  Molecules E E()
+  Molecules Cell Cell()
+end observables
+
+begin functions
+  infected_apoptosis_rate() \
+     max_infected_apoptosis_rate*(A()^apoptosis_hill/(A()^apoptosis_hill + \
+                                      max_infected_half_max^apoptosis_hill))          
+  rna_rep_rate() r_rep_max/(R() + r_rep_half)                                        
+  virus_export_rate() Cell()*r_exo
+  vout_day() Cell*r_exo*A()*24 
+  dead_cell_release() virus_fraction_released_at_death*infected_apoptosis_rate()                                     
+end functions
+begin reaction rules
+# RT module
+RT_1: R_EU + nV() -> R_EB r_bind
+RT_2: R_EB -> R_IB r_endo
+RT_3: R_IB -> R_IU + V r_release
+RT_4: R_IU -> R_EU r_recycle
+ 
+# V module
+V_1: V() -> U() r_uncoat
+V_2:  U() -> R() r_prep
+V_3:  R() -> R() + P() r_synth
+# Viral amplification
+V_4:  R() -> R() + R() rna_rep_rate() 
+# Basal vRNA degradation (leads to steady state vRNA at about 10 hours PI
+V_5:  R() -> 0 r_rna_deg
+V_6:  P() -> A() r_assemble
+# Note the the export of virus is proportional to the number of live cells, 
+# which is typically the fraction of a single live cell is nV=1.
+V_7:  A() -> E() virus_export_rate()
+  
+# VR module
+VR_1:  Cell()-> 0 infected_apoptosis_rate()
+# Virus release due to cell death. NOTE: Only valid for mean field (ODE's), not for SSA
+VR_2: A() -> E() dead_cell_release()
+  
+end reaction rules
+end model
+
+generate_network()
+saveConcentrations()
+writeSBML()
+writeMfile()
+simulate({method=>"ode",suffix=>"ode",t_end=>50,n_steps=>320,print_functions=>1})
+#resetConcentrations()
+#simulate({method=>"ssa",suffix=>"ssa",t_end=>60*24,n_steps=>240})

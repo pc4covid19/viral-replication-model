@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created by BioNetGen 2.5.1  -->
+<sbml xmlns="http://www.sbml.org/sbml/level2/version3" level="2" version="3">
+  <model id="V4_RT_V_VR">
+    <listOfCompartments>
+      <compartment id="cell" size="1"/>
+    </listOfCompartments>
+    <listOfSpecies>
+      <species id="S1" compartment="cell" initialConcentration="10" name="nV()"/>
+      <species id="S2" compartment="cell" initialConcentration="10000" name="R_EU()"/>
+      <species id="S3" compartment="cell" initialConcentration="1" name="Cell()"/>
+      <species id="S4" compartment="cell" initialConcentration="1" name="E()"/>
+      <species id="S5" compartment="cell" initialConcentration="0" name="R_EB()"/>
+      <species id="S6" compartment="cell" initialConcentration="0" name="R_IB()"/>
+      <species id="S7" compartment="cell" initialConcentration="0" name="R_IU()"/>
+      <species id="S8" compartment="cell" initialConcentration="0" name="V()"/>
+      <species id="S9" compartment="cell" initialConcentration="0" name="U()"/>
+      <species id="S10" compartment="cell" initialConcentration="0" name="R()"/>
+      <species id="S11" compartment="cell" initialConcentration="0" name="P()"/>
+      <species id="S12" compartment="cell" initialConcentration="0" name="A()"/>
+    </listOfSpecies>
+    <listOfParameters>
+      <!-- Independent variables -->
+      <parameter id="TIME_CONV" value="60"/>
+      <parameter id="ACE2_0" value="10000"/>
+      <parameter id="r_rep_half" value="200"/>
+      <parameter id="max_infected_half_max" value="250"/>
+      <parameter id="apoptosis_hill" value="1"/>
+      <parameter id="virus_fraction_released_at_death" value="0"/>
+      <!-- Dependent variables -->
+      <parameter id="r_bind" constant="true"/>
+      <parameter id="r_endo" constant="true"/>
+      <parameter id="r_release" constant="true"/>
+      <parameter id="r_recycle" constant="true"/>
+      <parameter id="r_uncoat" constant="true"/>
+      <parameter id="r_prep" constant="true"/>
+      <parameter id="r_synth" constant="true"/>
+      <parameter id="r_rep_max" constant="true"/>
+      <parameter id="r_rna_deg" constant="true"/>
+      <parameter id="r_assemble" constant="true"/>
+      <parameter id="r_exo" constant="true"/>
+      <parameter id="max_infected_apoptosis_rate" constant="true"/>
+      <!-- Observables -->
+      <parameter id="nV" constant="false"/>
+      <parameter id="R_EB" constant="false"/>
+      <parameter id="V" constant="false"/>
+      <parameter id="U" constant="false"/>
+      <parameter id="R" constant="false"/>
+      <parameter id="P" constant="false"/>
+      <parameter id="A" constant="false"/>
+      <parameter id="E" constant="false"/>
+      <parameter id="Cell" constant="false"/>
+      <!-- Global functions -->
+      <parameter id="infected_apoptosis_rate" constant="false"/>
+      <parameter id="rna_rep_rate" constant="false"/>
+      <parameter id="virus_export_rate" constant="false"/>
+      <parameter id="vout_day" constant="false"/>
+      <parameter id="dead_cell_release" constant="false"/>
+    </listOfParameters>
+    <listOfInitialAssignments>
+      <!-- Dependent variables -->
+      <initialAssignment symbol="r_bind">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_endo">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_release">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_recycle">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_uncoat">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_prep">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_synth">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_rep_max">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 3 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_rna_deg">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.010 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_assemble">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="r_exo">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.01 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+      <initialAssignment symbol="max_infected_apoptosis_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <cn> 0.002 </cn>
+            <ci> TIME_CONV </ci>
+          </apply>
+        </math>
+      </initialAssignment>
+    </listOfInitialAssignments>
+    <listOfRules>
+      <!-- Observables -->
+      <assignmentRule variable="nV">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S1 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="R_EB">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S5 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="V">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S8 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="U">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S9 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="R">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S10 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="P">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S11 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="A">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S12 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="E">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S4 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <assignmentRule variable="Cell">
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <plus/>
+              <cn> 0 </cn>
+              <ci> S3 </ci>
+            </apply>
+          </math>
+      </assignmentRule>
+      <!-- Global functions -->
+      <assignmentRule variable="infected_apoptosis_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> max_infected_apoptosis_rate </ci>
+            <apply>
+              <divide/>
+              <apply>
+                <power/>
+                <ci> A </ci>
+                <ci> apoptosis_hill </ci>
+              </apply>
+              <apply>
+                <plus/>
+                <apply>
+                  <power/>
+                  <ci> A </ci>
+                  <ci> apoptosis_hill </ci>
+                </apply>
+                <apply>
+                  <power/>
+                  <ci> max_infected_half_max </ci>
+                  <ci> apoptosis_hill </ci>
+                </apply>
+              </apply>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="rna_rep_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <divide/>
+            <ci> r_rep_max </ci>
+            <apply>
+              <plus/>
+              <ci> R </ci>
+              <ci> r_rep_half </ci>
+            </apply>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="virus_export_rate">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> Cell </ci>
+            <ci> r_exo </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="vout_day">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <apply>
+              <times/>
+              <apply>
+                <times/>
+                <ci> Cell </ci>
+                <ci> r_exo </ci>
+              </apply>
+              <ci> A </ci>
+            </apply>
+            <cn> 24 </cn>
+          </apply>
+        </math>
+      </assignmentRule>
+      <assignmentRule variable="dead_cell_release">
+        <math xmlns="http://www.w3.org/1998/Math/MathML">
+          <apply>
+            <times/>
+            <ci> virus_fraction_released_at_death </ci>
+            <ci> infected_apoptosis_rate </ci>
+          </apply>
+        </math>
+      </assignmentRule>
+    </listOfRules>
+    <listOfReactions>
+      <reaction id="R1" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S1"/>
+          <speciesReference species="S2"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S5"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_bind </ci>
+              <ci> S1 </ci>
+              <ci> S2 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R2" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S3"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> infected_apoptosis_rate </ci>
+              <ci> S3 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R3" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S5"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S6"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_endo </ci>
+              <ci> S5 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R4" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S6"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S7"/>
+          <speciesReference species="S8"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_release </ci>
+              <ci> S6 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R5" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S7"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S2"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_recycle </ci>
+              <ci> S7 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R6" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S8"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S9"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_uncoat </ci>
+              <ci> S8 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R7" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S9"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S10"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_prep </ci>
+              <ci> S9 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R8" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S10"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S10"/>
+          <speciesReference species="S11"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_synth </ci>
+              <ci> S10 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R9" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S10"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S10"/>
+          <speciesReference species="S10"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> rna_rep_rate </ci>
+              <ci> S10 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R10" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S10"/>
+        </listOfReactants>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_rna_deg </ci>
+              <ci> S10 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R11" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S11"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S12"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> r_assemble </ci>
+              <ci> S11 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R12" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S12"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S4"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> virus_export_rate </ci>
+              <ci> S12 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+      <reaction id="R13" reversible="false">
+        <listOfReactants>
+          <speciesReference species="S12"/>
+        </listOfReactants>
+        <listOfProducts>
+          <speciesReference species="S4"/>
+        </listOfProducts>
+        <kineticLaw>
+          <math xmlns="http://www.w3.org/1998/Math/MathML">
+            <apply>
+              <times/>
+              <ci> dead_cell_release </ci>
+              <ci> S12 </ci>
+            </apply>
+          </math>
+        </kineticLaw>
+      </reaction>
+    </listOfReactions>
+  </model>
+</sbml>

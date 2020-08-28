@@ -1,0 +1,68 @@
+# Created by BioNetGen 2.5.1
+begin parameters
+    1 TIME_CONV                         60  # Constant
+    2 r_bind                            0.01*TIME_CONV  # ConstantExpression
+    3 r_endo                            0.01*TIME_CONV  # ConstantExpression
+    4 r_release                         0.01*TIME_CONV  # ConstantExpression
+    5 r_recycle                         0.01*TIME_CONV  # ConstantExpression
+    6 ACE2_0                            1e4  # Constant
+    7 r_uncoat                          0.01*TIME_CONV  # ConstantExpression
+    8 r_prep                            0.01*TIME_CONV  # ConstantExpression
+    9 r_synth                           0.01*TIME_CONV  # ConstantExpression
+   10 r_rep_max                         3*TIME_CONV  # ConstantExpression
+   11 r_rep_half                        200  # Constant
+   12 r_rna_deg                         0.010*TIME_CONV  # ConstantExpression
+   13 r_assemble                        0.01*TIME_CONV  # ConstantExpression
+   14 r_exo                             0.01*TIME_CONV  # ConstantExpression
+   15 max_infected_apoptosis_rate       0.002*TIME_CONV  # ConstantExpression
+   16 max_infected_half_max             250  # Constant
+   17 apoptosis_hill                    1  # Constant
+   18 virus_fraction_released_at_death  0  # Constant
+end parameters
+begin functions
+    1 infected_apoptosis_rate() max_infected_apoptosis_rate*((A()^apoptosis_hill)/((A()^apoptosis_hill)+(max_infected_half_max^apoptosis_hill)))
+    2 rna_rep_rate() r_rep_max/(R()+r_rep_half)
+    3 virus_export_rate() Cell()*r_exo
+    4 vout_day() ((Cell*r_exo)*A())*24
+    5 dead_cell_release() virus_fraction_released_at_death*infected_apoptosis_rate()
+end functions
+begin species
+    1 nV() 10
+    2 R_EU() ACE2_0
+    3 Cell() 1
+    4 E() 1
+    5 R_EB() 0
+    6 R_IB() 0
+    7 R_IU() 0
+    8 V() 0
+    9 U() 0
+   10 R() 0
+   11 P() 0
+   12 A() 0
+end species
+begin reactions
+    1 1,2 5 r_bind #RT_1
+    2 3 0 infected_apoptosis_rate #VR_1
+    3 5 6 r_endo #RT_2
+    4 6 7,8 r_release #RT_3
+    5 7 2 r_recycle #RT_4
+    6 8 9 r_uncoat #V_1
+    7 9 10 r_prep #V_2
+    8 10 10,11 r_synth #V_3
+    9 10 10,10 rna_rep_rate #V_4
+   10 10 0 r_rna_deg #V_5
+   11 11 12 r_assemble #V_6
+   12 12 4 virus_export_rate #V_7
+   13 12 4 dead_cell_release #VR_2
+end reactions
+begin groups
+    1 nV                   1
+    2 R_EB                 5
+    3 V                    8
+    4 U                    9
+    5 R                    10
+    6 P                    11
+    7 A                    12
+    8 E                    4
+    9 Cell                 3
+end groups
