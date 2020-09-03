@@ -222,7 +222,6 @@ int main( int argc, char* argv[] )
 			// 	time_lymphatics = 0.0;
 			// }
 
-			// lymphatic dynamics 
 			time_viral_replication += diffusion_dt;
 			if( time_viral_replication > modulo_time_viral_replication )
 			{

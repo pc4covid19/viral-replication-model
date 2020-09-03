@@ -291,6 +291,7 @@ void setup_tissue( void )
 			pC = create_cell( get_cell_definition("lung epithelium" ) ); 
 			pC->assign_position( x,y, 0.0 );
 
+            // only if we want to have a SBML in epi cells
 // #ifdef LIBROADRUNNER
 // 			assign_SBML_model( pC );
 // #endif

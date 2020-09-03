@@ -1,4 +1,5 @@
 #include "./immune_submodels.h" 
+void assign_DC_SBML_model( Cell* pC );
 
 using namespace PhysiCell; 
 
@@ -319,6 +320,11 @@ void create_infiltrating_immune_cell_initial( Cell_Definition* pCD )
 	position[1] = Ymin + UniformRandom()*Yrange; 
 
 	pC->assign_position( position );
+
+#ifdef LIBROADRUNNER
+    if (pC->type_name == "DC")
+	{ assign_DC_SBML_model( pC ); }
+#endif
 	
 	return; 
 }
@@ -1212,6 +1218,62 @@ void immune_cell_recruitment( double dt )
 	return; 
 }
 
+//------------------  SBML related ---------------------
+#ifdef LIBROADRUNNER
+// int find_SBML_species_index(rrc::RRStringArrayPtr ids, std::string species_name)
+// {
+//     for (int idx = 0; idx < ids->Count; idx++) {
+//         if (species_name == ids->String[idx]) {
+//             std::cout << "find_SBML_species_index(): " << species_name << " --> " << idx << std::endl;
+//             return idx;
+//         }
+//     }
+//     std::cout << "find_SBML_species_index(): Could not find SBML species: " << species_name << std::endl;
+//     exit(1);
+// }
+
+void assign_DC_SBML_model( Cell* pC )
+{
+	// extern SBMLDocument_t *sbml_doc;
+	rrc::RRVectorPtr vptr;
+    rrc::RRCDataPtr result;  // start time, end time, and number of points
+
+	std::cout << "assign_DC_SBML_model():------------->>>>>  Creating rrHandle, loadSBML file\n\n";
+	// std::cout << "------------->>>>>  SBML file = " << cell_type_param.sbml_filename << std::endl;
+	std::cout << "------------->>>>>  SBML file = " << get_cell_definition("DC").sbml_filename << std::endl;
+	rrc::RRHandle rrHandle = createRRInstance();
+	// cell_defaults.phenotype.motility.persistence_time = parameters.doubles("persistence_time"); 
+	// if (!rrc::loadSBML (rrHandle, "../Toy_Model_for_PhysiCell_1.xml")) {
+	if (!rrc::loadSBML (rrHandle, get_cell_definition("DC").sbml_filename.c_str())) 
+    {
+		std::cout << "------------->>>>>  Error while loading SBML file  <-------------\n\n";
+	// 	printf ("Error message: %s\n", getLastError());
+	// 	getchar ();
+	// 	exit (0);
+	}
+	pC->phenotype.molecular.model_rr = rrHandle;  // assign the intracellular model to each cell
+	int r = rrc::getNumberOfReactions(rrHandle);
+	int m = rrc::getNumberOfFloatingSpecies(rrHandle);
+	int b = rrc::getNumberOfBoundarySpecies(rrHandle);
+	int p = rrc::getNumberOfGlobalParameters(rrHandle);
+	int c = rrc::getNumberOfCompartments(rrHandle);
+
+	std::cout << "Number of reactions = " << r << std::endl;
+	std::cout << "Number of floating species = " << m << std::endl;  // 4
+	std::cout << "Number of boundary species = " << b << std::endl;  // 0
+	std::cout << "Number of compartments = " << c << std::endl;  // 1
+
+	std::cout << "Floating species names:\n";
+	std::cout << "-----------------------\n";
+	std::cout << stringArrayToString(rrc::getFloatingSpeciesIds(rrHandle)) <<"\n"<< std::endl;
+
+	vptr = rrc::getFloatingSpeciesConcentrations(rrHandle);
+	std::cout << vptr->Count << std::endl;
+	for (int kdx=0; kdx<vptr->Count; kdx++)
+		std::cout << kdx << ") " << vptr->Data[kdx] << std::endl;
+}
+#endif
+
 void initial_immune_cell_placement( void )
 {
 	Cell_Definition* pCD8 = find_cell_definition( "CD8 Tcell" ); 
@@ -1233,7 +1295,8 @@ void initial_immune_cell_placement( void )
 
 	// DC	
 	for( int n = 0 ; n < parameters.ints("number_of_DCs") ; n++ )
-	{ create_infiltrating_immune_cell_initial( pDC ); }		
+	{ create_infiltrating_immune_cell_initial( pDC ); }
+        
 	return;
 }
 
